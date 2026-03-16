@@ -1,4 +1,5 @@
 import { PriceTable } from "@/components/price-table"
+import { AdSlot } from "@/components/ad-slot"
 import models from "@/data/models.json"
 import providers from "@/data/providers.json"
 import type { LLMModel, Provider } from "@/types"
@@ -8,7 +9,7 @@ import { Calculator } from "lucide-react"
 export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 space-y-3">
+      <div className="mb-6 space-y-3">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           LLM API Pricing
         </h1>
@@ -26,10 +27,14 @@ export default function Home() {
         </Link>
       </div>
 
+      <AdSlot placement="top" className="mb-6" />
+
       <PriceTable
         models={models as LLMModel[]}
         providers={providers as Provider[]}
       />
+
+      <AdSlot placement="between" className="mt-6" />
     </div>
   )
 }

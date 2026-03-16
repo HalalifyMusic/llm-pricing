@@ -2,9 +2,12 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import models from "@/data/models.json"
 import providers from "@/data/providers.json"
+import priceHistory from "@/data/price-history.json"
 import type { LLMModel, Provider } from "@/types"
 import { PriceCell } from "@/components/price-cell"
 import { ProviderBadge } from "@/components/provider-badge"
+import { PriceHistoryChart } from "@/components/price-history-chart"
+import { AdSlot } from "@/components/ad-slot"
 import { formatTokens } from "@/lib/format"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -168,6 +171,13 @@ export default async function ModelPage({ params }: PageProps) {
           </div>
         </Card>
       )}
+
+      <PriceHistoryChart
+        history={(priceHistory as Record<string, Array<{ date: string; input: number; output: number }>>)[model.id] ?? []}
+        modelName={model.name}
+      />
+
+      <AdSlot placement="between" className="my-6" />
 
       <div className="mb-8 flex flex-wrap gap-2">
         <Badge variant="outline">{model.speed} speed</Badge>

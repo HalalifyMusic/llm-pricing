@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { CostCalculator } from "@/components/cost-calculator"
+import { AdSlot } from "@/components/ad-slot"
 import models from "@/data/models.json"
 import providers from "@/data/providers.json"
 import type { LLMModel, Provider } from "@/types"
@@ -24,12 +25,16 @@ export default function CalculatorPage() {
         </p>
       </div>
 
+      <AdSlot placement="top" className="mb-6" />
+
       <Suspense fallback={<div className="h-96 animate-pulse rounded-lg bg-muted" />}>
         <CostCalculator
           models={models as LLMModel[]}
           providers={providers as Provider[]}
         />
       </Suspense>
+
+      <AdSlot placement="between" className="mt-6" />
     </div>
   )
 }

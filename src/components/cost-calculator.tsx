@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import type { LLMModel, Provider } from "@/types"
 import { calculateMonthlyCost, costPer1KRequests } from "@/lib/pricing"
@@ -219,17 +220,17 @@ export function CostCalculator({ models, providers }: CostCalculatorProps) {
                   : "border-border/50 hover:border-border"
               )}
             >
-              <div className="w-40 shrink-0 sm:w-52">
+              <Link href={`/models/${r.model.id}`} className="w-40 shrink-0 sm:w-52">
                 <div className="flex items-center gap-2">
                   {isFirst && <Trophy className="h-4 w-4 text-emerald-400" />}
-                  <span className="text-sm font-medium">{r.model.name}</span>
+                  <span className="text-sm font-medium hover:underline">{r.model.name}</span>
                 </div>
                 <ProviderBadge
                   name={r.model.provider}
                   color={getProviderColor(providers, r.model.provider)}
                   className="mt-1"
                 />
-              </div>
+              </Link>
 
               <div className="hidden flex-1 sm:block">
                 <div
