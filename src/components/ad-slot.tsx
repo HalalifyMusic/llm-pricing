@@ -54,9 +54,9 @@ function GoogleAd({ placement }: { placement: string }) {
     <div ref={containerRef}>
       <ins
         className="adsbygoogle"
-        style={{ display: "block" }}
+        style={{ display: "block", minHeight: "90px" }}
         data-ad-client={ADSENSE_ID}
-        data-ad-slot={slotId}
+        {...(slotId ? { "data-ad-slot": slotId } : {})}
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
@@ -94,24 +94,15 @@ function EthicalAd() {
 }
 
 export function AdSlot({ placement, className }: AdSlotProps) {
-  // Priority 1: Google AdSense with explicit slot IDs
-  // When using Auto Ads (no slot IDs), the script in layout.tsx handles everything
-  // We only render <ins> elements when explicit slot IDs are configured
-  const slotId = AD_SLOT_MAP[placement] || ""
-  if (ADSENSE_ID && slotId) {
+  // Google AdSense — render ad container for both manual slots and Auto Ads
+  if (ADSENSE_ID) {
     return (
       <div className={className}>
-        <div className="rounded-lg border border-border/30 bg-muted/10 px-4 py-3">
+        <div className="min-h-[90px]">
           <GoogleAd placement={placement} />
         </div>
       </div>
     )
-  }
-
-  // If AdSense is configured but using Auto Ads (no slot IDs), render nothing
-  // Google Auto Ads places ads automatically via the script tag in layout.tsx
-  if (ADSENSE_ID && !slotId) {
-    return null
   }
 
   // Priority 2: Carbon Ads
