@@ -8,6 +8,7 @@ import { PriceCell } from "@/components/price-cell"
 import { ProviderBadge } from "@/components/provider-badge"
 import { PriceHistoryChart } from "@/components/price-history-chart"
 import { AdSlot } from "@/components/ad-slot"
+import { generateModelJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo"
 import { formatTokens } from "@/lib/format"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -67,7 +68,23 @@ export default async function ModelPage({ params }: PageProps) {
     })
     .slice(0, 5)
 
+  const jsonLd = generateModelJsonLd(model)
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: model.provider, url: `/?q=${model.provider}` },
+    { name: model.name, url: `/models/${model.id}` },
+  ])
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <Link
         href="/"
@@ -246,5 +263,6 @@ export default async function ModelPage({ params }: PageProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }
