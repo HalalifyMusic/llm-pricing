@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "LLM token cost",
   ],
   alternates: {
-    canonical: "https://llm-pricing.vercel.app",
+    canonical: "https://llm-pricing-theta.vercel.app",
   },
 }
 

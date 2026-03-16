@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import models from "@/data/models.json"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://llm-pricing.vercel.app"
+  const baseUrl = "https://llm-pricing-theta.vercel.app"
 
   const modelPages = models.map((model) => ({
     url: `${baseUrl}/models/${model.id}`,

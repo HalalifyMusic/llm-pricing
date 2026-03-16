@@ -1,6 +1,6 @@
 import type { LLMModel } from "@/types"
 
-const BASE_URL = "https://llm-pricing.vercel.app"
+const BASE_URL = "https://llm-pricing-theta.vercel.app"
 
 export function generateModelJsonLd(model: LLMModel) {
   return {

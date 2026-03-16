@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://llm-pricing.vercel.app/sitemap.xml",
+    sitemap: "https://llm-pricing-theta.vercel.app/sitemap.xml",
   }
 }
