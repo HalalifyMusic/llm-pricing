@@ -7,6 +7,7 @@ import type { LLMModel, Provider } from "@/types"
 import { calculateMonthlyCost, costPer1KRequests } from "@/lib/pricing"
 import { getProviderSignupUrl } from "@/lib/affiliate"
 import { formatCurrency } from "@/lib/format"
+import { getProviderColor, getProviderId, getProviderUrl } from "@/lib/providers"
 import { ProviderBadge } from "./provider-badge"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
@@ -63,27 +64,6 @@ const WORKLOAD_PRESETS: WorkloadPreset[] = [
 interface CostCalculatorProps {
   models: LLMModel[]
   providers: Provider[]
-}
-
-function getProviderColor(providers: Provider[], name: string): string {
-  const match = providers.find(
-    (p) => p.name.toLowerCase() === name.toLowerCase()
-  )
-  return match?.color ?? "#888"
-}
-
-function getProviderId(providers: Provider[], name: string): string {
-  const match = providers.find(
-    (p) => p.name.toLowerCase() === name.toLowerCase()
-  )
-  return match?.id ?? name.toLowerCase()
-}
-
-function getProviderUrl(providers: Provider[], name: string): string {
-  const match = providers.find(
-    (p) => p.name.toLowerCase() === name.toLowerCase()
-  )
-  return match?.url ?? "#"
 }
 
 export function CostCalculator({ models, providers }: CostCalculatorProps) {

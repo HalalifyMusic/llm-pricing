@@ -16,7 +16,7 @@ export function EmailCapture({ className }: EmailCaptureProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!email || !email.includes("@")) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setErrorMessage("Please enter a valid email address.")
       setStatus("error")
       return

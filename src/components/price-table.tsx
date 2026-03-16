@@ -6,6 +6,7 @@ import type { LLMModel, Provider } from "@/types"
 import { PriceCell } from "./price-cell"
 import { ProviderBadge } from "./provider-badge"
 import { formatTokens } from "@/lib/format"
+import { getProviderColor } from "@/lib/providers"
 import { ArrowUpDown, ArrowUp, ArrowDown, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -17,11 +18,6 @@ type SortDir = "asc" | "desc"
 interface PriceTableProps {
   models: LLMModel[]
   providers: Provider[]
-}
-
-function getProviderColor(providers: Provider[], providerId: string): string {
-  const match = providers.find((p) => p.id === providerId.toLowerCase())
-  return match?.color ?? "#888"
 }
 
 function SortIcon({

@@ -94,8 +94,11 @@ function EthicalAd() {
 }
 
 export function AdSlot({ placement, className }: AdSlotProps) {
-  // Priority 1: Google AdSense
-  if (ADSENSE_ID) {
+  // Priority 1: Google AdSense with explicit slot IDs
+  // When using Auto Ads (no slot IDs), the script in layout.tsx handles everything
+  // We only render <ins> elements when explicit slot IDs are configured
+  const slotId = AD_SLOT_MAP[placement] || ""
+  if (ADSENSE_ID && slotId) {
     return (
       <div className={className}>
         <div className="rounded-lg border border-border/30 bg-muted/10 px-4 py-3">
@@ -103,6 +106,12 @@ export function AdSlot({ placement, className }: AdSlotProps) {
         </div>
       </div>
     )
+  }
+
+  // If AdSense is configured but using Auto Ads (no slot IDs), render nothing
+  // Google Auto Ads places ads automatically via the script tag in layout.tsx
+  if (ADSENSE_ID && !slotId) {
+    return null
   }
 
   // Priority 2: Carbon Ads

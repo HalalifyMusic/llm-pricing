@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   keywords: [
     "LLM pricing",
     "AI API costs",
-    "GPT-4 pricing",
+    "GPT-5.4 pricing",
     "Claude pricing",
     "Gemini pricing",
     "LLM cost calculator",
