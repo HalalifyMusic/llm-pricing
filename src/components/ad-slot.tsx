@@ -8,15 +8,61 @@ interface AdSlotProps {
 }
 
 /**
- * Carbon Ads integration.
+ * Ad integration — supports Google AdSense, Carbon Ads, or EthicalAds.
  *
- * To activate: set NEXT_PUBLIC_CARBON_SERVE_ID in your environment.
- * Get your serve ID by signing up at https://www.carbonads.net/
+ * Priority order:
+ * 1. Google AdSense (NEXT_PUBLIC_ADSENSE_CLIENT_ID) — free signup, no traffic minimum
+ * 2. Carbon Ads (NEXT_PUBLIC_CARBON_SERVE_ID) — higher RPM, needs 10K+ monthly views
+ * 3. EthicalAds (NEXT_PUBLIC_ETHICALADS_PUBLISHER) — privacy-focused, low threshold
+ * 4. Placeholder fallback
  *
- * The serve ID format is typically: CEXXXXXXX
- * The placement is automatically set to "llm-pricing" for tracking.
+ * Sign up at:
+ * - AdSense: https://adsense.google.com (free, cash out at $100)
+ * - Carbon: https://www.carbonads.net
+ * - EthicalAds: https://www.ethicalads.io
  */
+const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? ""
 const CARBON_SERVE_ID = process.env.NEXT_PUBLIC_CARBON_SERVE_ID ?? ""
+const ETHICALADS_PUB = process.env.NEXT_PUBLIC_ETHICALADS_PUBLISHER ?? ""
+
+const AD_SLOT_MAP: Record<string, string> = {
+  top: process.env.NEXT_PUBLIC_ADSENSE_SLOT_TOP ?? "",
+  between: process.env.NEXT_PUBLIC_ADSENSE_SLOT_BETWEEN ?? "",
+  sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? "",
+}
+
+function GoogleAd({ placement }: { placement: string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const pushedRef = useRef(false)
+
+  useEffect(() => {
+    if (!ADSENSE_ID || pushedRef.current) return
+    pushedRef.current = true
+
+    try {
+      const w = window as unknown as { adsbygoogle?: unknown[] }
+      w.adsbygoogle = w.adsbygoogle || []
+      w.adsbygoogle.push({})
+    } catch {
+      // AdSense may not be loaded yet
+    }
+  }, [])
+
+  const slotId = AD_SLOT_MAP[placement] || ""
+
+  return (
+    <div ref={containerRef}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client={ADSENSE_ID}
+        data-ad-slot={slotId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </div>
+  )
+}
 
 function CarbonAd({ placement }: { placement: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -24,8 +70,6 @@ function CarbonAd({ placement }: { placement: string }) {
 
   useEffect(() => {
     if (!CARBON_SERVE_ID || loadedRef.current || !containerRef.current) return
-
-    // Carbon Ads only allows one ad per page
     if (document.getElementById("_carbonads_js")) return
 
     loadedRef.current = true
@@ -39,8 +83,29 @@ function CarbonAd({ placement }: { placement: string }) {
   return <div ref={containerRef} />
 }
 
+function EthicalAd() {
+  return (
+    <div
+      data-ea-publisher={ETHICALADS_PUB}
+      data-ea-type="text"
+      data-ea-style="stickybox"
+    />
+  )
+}
+
 export function AdSlot({ placement, className }: AdSlotProps) {
-  // When Carbon Ads is configured, render the actual ad script
+  // Priority 1: Google AdSense
+  if (ADSENSE_ID) {
+    return (
+      <div className={className}>
+        <div className="rounded-lg border border-border/30 bg-muted/10 px-4 py-3">
+          <GoogleAd placement={placement} />
+        </div>
+      </div>
+    )
+  }
+
+  // Priority 2: Carbon Ads
   if (CARBON_SERVE_ID) {
     return (
       <div className={className}>
@@ -51,26 +116,26 @@ export function AdSlot({ placement, className }: AdSlotProps) {
     )
   }
 
-  // Fallback placeholder when no ad provider is configured
+  // Priority 3: EthicalAds
+  if (ETHICALADS_PUB) {
+    return (
+      <div className={className}>
+        <EthicalAd />
+      </div>
+    )
+  }
+
+  // Fallback: placeholder
   if (placement === "top") {
     return (
       <div className={className}>
-        <div
-          id="ad-top"
-          className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/20 px-4 py-3 text-sm"
-        >
+        <div className="flex items-center justify-between rounded-lg border border-border/50 bg-muted/20 px-4 py-3 text-sm">
           <div className="flex items-center gap-3">
             <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Sponsored
             </span>
             <span className="text-muted-foreground">
-              Your ad here — reach developers comparing LLM APIs.{" "}
-              <a
-                href="mailto:ads@llm-pricing.com"
-                className="text-foreground underline underline-offset-4"
-              >
-                Advertise
-              </a>
+              Your ad here — reach developers comparing LLM APIs.
             </span>
           </div>
         </div>
@@ -81,21 +146,9 @@ export function AdSlot({ placement, className }: AdSlotProps) {
   if (placement === "between") {
     return (
       <div className={className}>
-        <div
-          id="ad-between"
-          className="flex items-center justify-center rounded-lg border border-border/30 bg-muted/10 px-4 py-2.5 text-xs text-muted-foreground"
-        >
+        <div className="flex items-center justify-center rounded-lg border border-border/30 bg-muted/10 px-4 py-2.5 text-xs text-muted-foreground">
           <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider">
             Ad
-          </span>
-          <span className="ml-2">
-            Sponsor this spot —{" "}
-            <a
-              href="mailto:ads@llm-pricing.com"
-              className="text-foreground underline underline-offset-4"
-            >
-              learn more
-            </a>
           </span>
         </div>
       </div>
