@@ -33,7 +33,7 @@ export function generateWebsiteJsonLd() {
       "Compare pricing across 50+ LLM APIs. Calculate your actual monthly cost based on real usage patterns.",
     potentialAction: {
       "@type": "SearchAction",
-      target: `${BASE_URL}/?q={search_term_string}`,
+      target: `${BASE_URL}/models/{search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   }

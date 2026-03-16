@@ -1,15 +1,57 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+
 interface AdSlotProps {
   placement: "top" | "sidebar" | "between"
   className?: string
 }
 
-export function AdSlot({ placement, className }: AdSlotProps) {
-  // Carbon Ads / EthicalAds integration point
-  // Replace the placeholder with actual ad script when ready:
-  //   <script async src="//cdn.carbonads.com/carbon.js?serve=XXXXX&placement=llm-pricing" id="_carbonads_js"></script>
-  // Or EthicalAds:
-  //   <div data-ea-publisher="llm-pricing" data-ea-type="text"></div>
+/**
+ * Carbon Ads integration.
+ *
+ * To activate: set NEXT_PUBLIC_CARBON_SERVE_ID in your environment.
+ * Get your serve ID by signing up at https://www.carbonads.net/
+ *
+ * The serve ID format is typically: CEXXXXXXX
+ * The placement is automatically set to "llm-pricing" for tracking.
+ */
+const CARBON_SERVE_ID = process.env.NEXT_PUBLIC_CARBON_SERVE_ID ?? ""
 
+function CarbonAd({ placement }: { placement: string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const loadedRef = useRef(false)
+
+  useEffect(() => {
+    if (!CARBON_SERVE_ID || loadedRef.current || !containerRef.current) return
+
+    // Carbon Ads only allows one ad per page
+    if (document.getElementById("_carbonads_js")) return
+
+    loadedRef.current = true
+    const script = document.createElement("script")
+    script.src = `//cdn.carbonads.com/carbon.js?serve=${CARBON_SERVE_ID}&placement=llm-pricing-${placement}`
+    script.id = "_carbonads_js"
+    script.async = true
+    containerRef.current.appendChild(script)
+  }, [placement])
+
+  return <div ref={containerRef} />
+}
+
+export function AdSlot({ placement, className }: AdSlotProps) {
+  // When Carbon Ads is configured, render the actual ad script
+  if (CARBON_SERVE_ID) {
+    return (
+      <div className={className}>
+        <div className="rounded-lg border border-border/30 bg-muted/10 px-4 py-3 [&_#carbonads]:flex [&_#carbonads]:items-center [&_#carbonads]:gap-4 [&_#carbonads]:text-sm [&_.carbon-wrap]:flex [&_.carbon-wrap]:items-center [&_.carbon-wrap]:gap-3 [&_.carbon-text]:text-muted-foreground [&_.carbon-poweredby]:text-xs [&_.carbon-poweredby]:text-muted-foreground/60 [&_.carbon-img]:block [&_.carbon-img_img]:rounded">
+          <CarbonAd placement={placement} />
+        </div>
+      </div>
+    )
+  }
+
+  // Fallback placeholder when no ad provider is configured
   if (placement === "top") {
     return (
       <div className={className}>

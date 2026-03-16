@@ -9,6 +9,7 @@ import { ProviderBadge } from "@/components/provider-badge"
 import { PriceHistoryChart } from "@/components/price-history-chart"
 import { AdSlot } from "@/components/ad-slot"
 import { generateModelJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo"
+import { getProviderPricingUrl, getProviderSignupUrl } from "@/lib/affiliate"
 import { formatTokens } from "@/lib/format"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -216,12 +217,23 @@ export default async function ModelPage({ params }: PageProps) {
         </Link>
         {providerInfo && (
           <a
-            href={providerInfo.url}
+            href={getProviderPricingUrl(providerInfo, "model-page")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
           >
             Official pricing
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        )}
+        {providerInfo && (
+          <a
+            href={getProviderSignupUrl(providerInfo.id, providerInfo.url, "model-page-cta")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+          >
+            Try {model.provider} API
             <ExternalLink className="h-4 w-4" />
           </a>
         )}

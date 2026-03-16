@@ -1,5 +1,6 @@
 import { PriceTable } from "@/components/price-table"
 import { AdSlot } from "@/components/ad-slot"
+import { EmailCapture } from "@/components/email-capture"
 import models from "@/data/models.json"
 import providers from "@/data/providers.json"
 import type { LLMModel, Provider } from "@/types"
@@ -7,10 +8,6 @@ import { generateWebsiteJsonLd, generateFaqJsonLd } from "@/lib/seo"
 import Link from "next/link"
 import { Calculator } from "lucide-react"
 import type { Metadata } from "next"
-
-const cheapestModel = [...(models as LLMModel[])].sort(
-  (a, b) => a.inputPricePer1M - b.inputPricePer1M
-)[0]
 
 const providerCount = new Set(models.map((m) => m.provider)).size
 
@@ -97,6 +94,8 @@ export default function Home() {
             Calculate your actual monthly cost
           </Link>
         </div>
+
+        <EmailCapture className="mb-6" />
 
         <AdSlot placement="top" className="mb-6" />
 

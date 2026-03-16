@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { CostCalculator } from "@/components/cost-calculator"
 import { AdSlot } from "@/components/ad-slot"
+import { EmailCapture } from "@/components/email-capture"
 import models from "@/data/models.json"
 import providers from "@/data/providers.json"
 import type { LLMModel, Provider } from "@/types"
@@ -33,6 +34,8 @@ export default function CalculatorPage() {
           providers={providers as Provider[]}
         />
       </Suspense>
+
+      <EmailCapture className="mt-6" />
 
       <AdSlot placement="between" className="mt-6" />
     </div>

@@ -5,13 +5,60 @@ import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import type { LLMModel, Provider } from "@/types"
 import { calculateMonthlyCost, costPer1KRequests } from "@/lib/pricing"
-import { formatCurrency, formatTokens } from "@/lib/format"
+import { getProviderSignupUrl } from "@/lib/affiliate"
+import { formatCurrency } from "@/lib/format"
 import { ProviderBadge } from "./provider-badge"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { Trophy, TrendingDown } from "lucide-react"
+import { Trophy, TrendingDown, ExternalLink, Zap } from "lucide-react"
+
+interface WorkloadPreset {
+  name: string
+  description: string
+  inputTokens: number
+  outputTokens: number
+  requestsPerDay: number
+}
+
+const WORKLOAD_PRESETS: WorkloadPreset[] = [
+  {
+    name: "Chatbot",
+    description: "Customer support or conversational AI",
+    inputTokens: 500,
+    outputTokens: 2000,
+    requestsPerDay: 1000,
+  },
+  {
+    name: "RAG Pipeline",
+    description: "Document retrieval and synthesis",
+    inputTokens: 8000,
+    outputTokens: 500,
+    requestsPerDay: 500,
+  },
+  {
+    name: "Code Assistant",
+    description: "IDE copilot or code review",
+    inputTokens: 2000,
+    outputTokens: 4000,
+    requestsPerDay: 200,
+  },
+  {
+    name: "Content Generator",
+    description: "Blog posts, marketing copy, reports",
+    inputTokens: 1000,
+    outputTokens: 3000,
+    requestsPerDay: 100,
+  },
+  {
+    name: "Data Extraction",
+    description: "Parsing documents, structured output",
+    inputTokens: 5000,
+    outputTokens: 200,
+    requestsPerDay: 2000,
+  },
+]
 
 interface CostCalculatorProps {
   models: LLMModel[]
@@ -23,6 +70,20 @@ function getProviderColor(providers: Provider[], name: string): string {
     (p) => p.name.toLowerCase() === name.toLowerCase()
   )
   return match?.color ?? "#888"
+}
+
+function getProviderId(providers: Provider[], name: string): string {
+  const match = providers.find(
+    (p) => p.name.toLowerCase() === name.toLowerCase()
+  )
+  return match?.id ?? name.toLowerCase()
+}
+
+function getProviderUrl(providers: Provider[], name: string): string {
+  const match = providers.find(
+    (p) => p.name.toLowerCase() === name.toLowerCase()
+  )
+  return match?.url ?? "#"
 }
 
 export function CostCalculator({ models, providers }: CostCalculatorProps) {
@@ -41,6 +102,16 @@ export function CostCalculator({ models, providers }: CostCalculatorProps) {
   const [cachedPercent, setCachedPercent] = useState(
     Number(searchParams.get("cached")) || 0
   )
+  const [activePreset, setActivePreset] = useState<string | null>(null)
+
+  const applyPreset = (preset: WorkloadPreset) => {
+    setInputTokens(preset.inputTokens)
+    setOutputTokens(preset.outputTokens)
+    setRequestsPerDay(preset.requestsPerDay)
+    updateUrl(preset.inputTokens, preset.outputTokens, preset.requestsPerDay, cachedPercent)
+    // Set after updateUrl (which clears it)
+    setActivePreset(preset.name)
+  }
 
   const updateUrl = (
     input: number,
@@ -48,6 +119,7 @@ export function CostCalculator({ models, providers }: CostCalculatorProps) {
     requests: number,
     cached: number
   ) => {
+    setActivePreset(null)
     const params = new URLSearchParams()
     params.set("input", String(input))
     params.set("output", String(output))
@@ -72,11 +144,36 @@ export function CostCalculator({ models, providers }: CostCalculatorProps) {
       .sort((a, b) => a.monthly - b.monthly)
   }, [models, inputTokens, outputTokens, requestsPerDay, cachedPercent])
 
-  const cheapest = results[0]?.monthly ?? 0
   const mostExpensive = results[results.length - 1]?.monthly ?? 1
 
   return (
     <div className="space-y-8">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Zap className="h-4 w-4" />
+          <span>Quick presets</span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {WORKLOAD_PRESETS.map((preset) => (
+            <button
+              key={preset.name}
+              onClick={() => applyPreset(preset)}
+              className={cn(
+                "rounded-lg border px-3 py-2 text-left transition-all",
+                activePreset === preset.name
+                  ? "border-primary bg-primary/10 text-foreground"
+                  : "border-border/50 hover:border-border hover:bg-muted/30"
+              )}
+            >
+              <span className="block text-sm font-medium">{preset.name}</span>
+              <span className="block text-xs text-muted-foreground">
+                {preset.description}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-6 rounded-lg border border-border bg-card p-6 sm:grid-cols-2">
         <div className="space-y-3">
           <label className="text-sm font-medium">
@@ -266,6 +363,19 @@ export function CostCalculator({ models, providers }: CostCalculatorProps) {
                     Best value
                   </Badge>
                 )}
+                <a
+                  href={getProviderSignupUrl(
+                    getProviderId(providers, r.model.provider),
+                    getProviderUrl(providers, r.model.provider),
+                    "calculator"
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden items-center gap-1 rounded-md border border-border/50 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-border hover:text-foreground sm:inline-flex"
+                >
+                  Try it
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </div>
             </div>
           )

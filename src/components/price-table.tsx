@@ -24,6 +24,23 @@ function getProviderColor(providers: Provider[], providerId: string): string {
   return match?.color ?? "#888"
 }
 
+function SortIcon({
+  field,
+  sortField,
+  sortDir,
+}: {
+  field: SortField
+  sortField: SortField
+  sortDir: SortDir
+}) {
+  if (sortField !== field) return <ArrowUpDown className="h-3 w-3 opacity-40" />
+  return sortDir === "asc" ? (
+    <ArrowUp className="h-3 w-3" />
+  ) : (
+    <ArrowDown className="h-3 w-3" />
+  )
+}
+
 function speedLabel(speed: string) {
   switch (speed) {
     case "fast":
@@ -115,15 +132,6 @@ export function PriceTable({ models, providers }: PriceTableProps) {
     }
   }
 
-  const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 opacity-40" />
-    return sortDir === "asc" ? (
-      <ArrowUp className="h-3 w-3" />
-    ) : (
-      <ArrowDown className="h-3 w-3" />
-    )
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -178,7 +186,7 @@ export function PriceTable({ models, providers }: PriceTableProps) {
                   onClick={() => handleSort("name")}
                   className="inline-flex items-center gap-1 hover:text-foreground"
                 >
-                  Model <SortIcon field="name" />
+                  Model <SortIcon field="name" sortField={sortField} sortDir={sortDir} />
                 </button>
               </th>
               <th className="px-4 py-3 text-left font-medium">Provider</th>
@@ -187,7 +195,7 @@ export function PriceTable({ models, providers }: PriceTableProps) {
                   onClick={() => handleSort("inputPrice")}
                   className="inline-flex items-center gap-1 hover:text-foreground"
                 >
-                  Input/1M <SortIcon field="inputPrice" />
+                  Input/1M <SortIcon field="inputPrice" sortField={sortField} sortDir={sortDir} />
                 </button>
               </th>
               <th className="px-4 py-3 text-right font-medium">
@@ -195,7 +203,7 @@ export function PriceTable({ models, providers }: PriceTableProps) {
                   onClick={() => handleSort("outputPrice")}
                   className="inline-flex items-center gap-1 hover:text-foreground"
                 >
-                  Output/1M <SortIcon field="outputPrice" />
+                  Output/1M <SortIcon field="outputPrice" sortField={sortField} sortDir={sortDir} />
                 </button>
               </th>
               <th className="hidden px-4 py-3 text-right font-medium md:table-cell">
@@ -203,7 +211,7 @@ export function PriceTable({ models, providers }: PriceTableProps) {
                   onClick={() => handleSort("context")}
                   className="inline-flex items-center gap-1 hover:text-foreground"
                 >
-                  Context <SortIcon field="context" />
+                  Context <SortIcon field="context" sortField={sortField} sortDir={sortDir} />
                 </button>
               </th>
               <th className="hidden px-4 py-3 text-center font-medium lg:table-cell">
@@ -211,7 +219,7 @@ export function PriceTable({ models, providers }: PriceTableProps) {
                   onClick={() => handleSort("speed")}
                   className="inline-flex items-center gap-1 hover:text-foreground"
                 >
-                  Speed <SortIcon field="speed" />
+                  Speed <SortIcon field="speed" sortField={sortField} sortDir={sortDir} />
                 </button>
               </th>
             </tr>

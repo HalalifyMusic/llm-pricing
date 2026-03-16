@@ -52,7 +52,6 @@ function CustomTooltip({
 
 export function PriceHistoryChart({
   history,
-  modelName,
 }: PriceHistoryChartProps) {
   if (history.length < 2) {
     return (
