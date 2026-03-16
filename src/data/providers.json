@@ -1,0 +1,79 @@
+[
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "logo": "/logos/openai.svg",
+    "url": "https://openai.com/api/pricing/",
+    "color": "#10A37F"
+  },
+  {
+    "id": "anthropic",
+    "name": "Anthropic",
+    "logo": "/logos/anthropic.svg",
+    "url": "https://www.anthropic.com/pricing",
+    "color": "#D4A574"
+  },
+  {
+    "id": "google",
+    "name": "Google",
+    "logo": "/logos/google.svg",
+    "url": "https://ai.google.dev/pricing",
+    "color": "#4285F4"
+  },
+  {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "logo": "/logos/deepseek.svg",
+    "url": "https://platform.deepseek.com/api-docs/pricing",
+    "color": "#4D6BFE"
+  },
+  {
+    "id": "mistral",
+    "name": "Mistral",
+    "logo": "/logos/mistral.svg",
+    "url": "https://mistral.ai/products/",
+    "color": "#F7D046"
+  },
+  {
+    "id": "xai",
+    "name": "xAI",
+    "logo": "/logos/xai.svg",
+    "url": "https://docs.x.ai/docs/models",
+    "color": "#FFFFFF"
+  },
+  {
+    "id": "amazon",
+    "name": "Amazon",
+    "logo": "/logos/amazon.svg",
+    "url": "https://aws.amazon.com/bedrock/pricing/",
+    "color": "#FF9900"
+  },
+  {
+    "id": "cohere",
+    "name": "Cohere",
+    "logo": "/logos/cohere.svg",
+    "url": "https://cohere.com/pricing",
+    "color": "#39594D"
+  },
+  {
+    "id": "together",
+    "name": "Together AI",
+    "logo": "/logos/together.svg",
+    "url": "https://www.together.ai/pricing",
+    "color": "#0066FF"
+  },
+  {
+    "id": "fireworks",
+    "name": "Fireworks AI",
+    "logo": "/logos/fireworks.svg",
+    "url": "https://fireworks.ai/pricing",
+    "color": "#FF6B35"
+  },
+  {
+    "id": "groq",
+    "name": "Groq",
+    "logo": "/logos/groq.svg",
+    "url": "https://groq.com/pricing/",
+    "color": "#F55036"
+  }
+]
