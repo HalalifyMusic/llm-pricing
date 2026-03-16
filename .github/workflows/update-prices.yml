@@ -1,0 +1,46 @@
+name: Update LLM Prices
+
+on:
+  schedule:
+    # Run every Monday and Thursday at 9am UTC
+    - cron: '0 9 * * 1,4'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run price update script
+        run: npx tsx scripts/update-prices.ts
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git diff src/data/models.json)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push if changed
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/models.json
+          git commit -m "chore: auto-update LLM prices $(date +%Y-%m-%d)"
+          git push
