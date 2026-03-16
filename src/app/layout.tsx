@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  verification: {
+    google: "ZTqNRRrBZ6olPAnglRVTeX3DUg9Hi_-aCvnVkKURM-8",
+  },
   title: {
     default: "LLM Pricing - Compare AI API Costs",
     template: "%s | LLM Pricing",
